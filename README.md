@@ -1,203 +1,178 @@
 # 🚀 Mini Release Tracker
 
-A Spring Boot backend application for managing software release records and deployment status tracking.
+A production-style backend application built with **Spring Boot** for managing software release workflows, deployment tracking, and release lifecycle management.
+
+Designed to demonstrate real-world backend development concepts including layered architecture, REST APIs, DTOs, database integration, exception handling, and cloud deployment.
 
 ---
 
-## 📋 Tech Stack
+## 🌐 Live Demo
 
-| Layer       | Technology                  |
-|-------------|-----------------------------|
-| Language    | Java 17                     |
-| Framework   | Spring Boot 3.2.5           |
-| Persistence | Spring Data JPA / Hibernate |
-| Database    | MySQL 8.x                   |
-| Build Tool  | Maven                       |
-| API Testing | Postman                     |
+🔗 [Live API](https://release-tracker-production.up.railway.app/)
 
 ---
 
-## 🏗️ Project Structure
+## ✨ Features
 
-```
-src/main/java/com/releasetracker/
-├── MiniReleaseTrackerApplication.java   ← Entry point
-│
-├── controller/
-│   └── ReleaseController.java           ← REST endpoints
-│
-├── service/
-│   ├── ReleaseService.java              ← Service interface
-│   └── impl/
-│       └── ReleaseServiceImpl.java      ← Business logic
-│
-├── repository/
-│   └── ReleaseRepository.java           ← Spring Data JPA
-│
-├── entity/
-│   └── Release.java                     ← JPA Entity (@Table: releases)
-│
-├── dto/
-│   ├── ReleaseRequestDTO.java           ← Create/Update request body
-│   ├── ReleaseResponseDTO.java          ← API response body
-│   └── StatusUpdateDTO.java             ← PATCH status body
-│
-├── enums/
-│   ├── DeploymentEnvironment.java       ← DEV | QA | PROD
-│   └── DeploymentStatus.java            ← PENDING | DEPLOYED | FAILED | ROLLBACK
-│
-└── exception/
-    ├── ReleaseNotFoundException.java    ← 404 custom exception
-    ├── ErrorResponse.java               ← Uniform error body
-    └── GlobalExceptionHandler.java      ← @RestControllerAdvice
-```
+- Create, update, delete, and fetch software releases
+- RESTful API architecture
+- Layered backend architecture
+- DTO-based request/response handling
+- Centralized exception handling
+- Enum-based status and priority management
+- MySQL database integration
+- JPA/Hibernate ORM
+- Cloud deployment using Railway
+- Clean and scalable code structure
 
 ---
 
-## ⚙️ Setup & Configuration
+## 🛠️ Tech Stack
 
-### 1. Prerequisites
-- Java 17+
-- Maven 3.8+
-- MySQL 8.x running locally
+| Technology | Usage |
+|------------|-------|
+| Java 21 | Core Programming Language |
+| Spring Boot 3 | Backend Framework |
+| Spring Data JPA | Database ORM |
+| MySQL | Relational Database |
+| Maven | Dependency Management |
+| Railway | Cloud Deployment |
+| Lombok | Boilerplate Reduction |
 
-### 2. Create the Database
+---
 
-Run the provided SQL script in MySQL:
+## 📂 Project Structure
 
 ```bash
-mysql -u root -p < src/main/resources/db-init.sql
+src/main/java/com/releasetracker
+│
+├── controller      # REST Controllers
+├── service         # Business Logic
+├── repository      # JPA Repositories
+├── entity          # Database Entities
+├── dto             # Data Transfer Objects
+├── exception       # Global Exception Handling
+└── config          # Configuration Classes
 ```
 
-Or manually:
+---
 
-```sql
-CREATE DATABASE IF NOT EXISTS release_tracker_db;
+## ⚙️ API Endpoints
+
+### 🔹 Create Release
+
+```http
+POST /api/releases
 ```
 
-### 3. Configure Credentials
+#### Request Body
 
-Edit `src/main/resources/application.properties`:
+```json
+{
+  "title": "Version 2.0 Launch",
+  "description": "Major production deployment",
+  "status": "PLANNED",
+  "priority": "HIGH"
+}
+```
+
+---
+
+### 🔹 Get All Releases
+
+```http
+GET /api/releases
+```
+
+---
+
+### 🔹 Get Release By ID
+
+```http
+GET /api/releases/{id}
+```
+
+---
+
+### 🔹 Update Release
+
+```http
+PUT /api/releases/{id}
+```
+
+---
+
+### 🔹 Delete Release
+
+```http
+DELETE /api/releases/{id}
+```
+
+---
+
+## 🧠 Backend Concepts Practiced
+
+- Dependency Injection
+- REST API Design
+- DTO Mapping
+- JPA Repository Pattern
+- Exception Handling
+- Layered Architecture
+- CRUD Operations
+- Cloud Deployment
+- Environment Variables
+- Database Connectivity
+
+---
+
+## ☁️ Deployment
+
+Application deployed using:
+
+- Railway Cloud Platform
+- Railway MySQL Database
+
+---
+
+## ▶️ Run Locally
+
+### 1️⃣ Clone Repository
+
+```bash
+git clone https://github.com/your-username/release-tracker.git
+cd release-tracker
+```
+
+---
+
+### 2️⃣ Configure Database
+
+Update `application.properties`
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/release_tracker_db?useSSL=false&serverTimezone=UTC
-spring.datasource.username=root
-spring.datasource.password=YOUR_PASSWORD
+spring.datasource.url=jdbc:mysql://localhost:3306/release_tracker
+spring.datasource.username=your_username
+spring.datasource.password=your_password
 ```
 
-### 4. Build & Run
+---
+
+### 3️⃣ Run Application
 
 ```bash
-# Build
-mvn clean install
-
-# Run
 mvn spring-boot:run
 ```
 
-The server starts at **http://localhost:8080**
-
 ---
 
-## 🌐 REST API Endpoints
+## 📌 Future Improvements
 
-### Base URL: `http://localhost:8080/api/releases`
-
-| Method   | Endpoint                  | Description                      |
-|----------|---------------------------|----------------------------------|
-| `POST`   | `/api/releases`           | Create a new release             |
-| `GET`    | `/api/releases`           | Get all releases                 |
-| `GET`    | `/api/releases?project=X` | Filter by project name           |
-| `GET`    | `/api/releases?status=X`  | Filter by status                 |
-| `GET`    | `/api/releases?environment=X` | Filter by environment        |
-| `GET`    | `/api/releases/{id}`      | Get release by ID                |
-| `PUT`    | `/api/releases/{id}`      | Full update of a release         |
-| `PATCH`  | `/api/releases/{id}/status` | Update deployment status only  |
-| `DELETE` | `/api/releases/{id}`      | Delete a release                 |
+- JWT Authentication
+- Swagger/OpenAPI Documentation
+- Role-Based Access Control
+- Docker Support
+- CI/CD Pipeline
+- Analytics Dashboard
+- Release Scheduling
 
 ---
-
-## 📦 Sample Request / Response
-
-### POST `/api/releases`
-
-**Request Body:**
-```json
-{
-  "projectName": "InventoryService",
-  "version": "v1.2.0",
-  "environment": "QA",
-  "releaseDate": "2024-02-10",
-  "status": "PENDING",
-  "description": "Feature: stock alert system"
-}
-```
-
-**Response (201 Created):**
-```json
-{
-  "id": 6,
-  "projectName": "InventoryService",
-  "version": "v1.2.0",
-  "environment": "QA",
-  "releaseDate": "2024-02-10",
-  "status": "PENDING",
-  "description": "Feature: stock alert system",
-  "createdAt": "2024-01-25T10:30:00",
-  "updatedAt": "2024-01-25T10:30:00"
-}
-```
-
-### PATCH `/api/releases/{id}/status`
-
-**Request Body:**
-```json
-{ "status": "DEPLOYED" }
-```
-
-### Error Response (404):
-```json
-{
-  "status": 404,
-  "error": "Not Found",
-  "message": "Release not found with ID: 99",
-  "timestamp": "2024-01-25T10:30:00"
-}
-```
-
----
-
-## 📊 Enums Reference
-
-### DeploymentEnvironment
-| Value | Description        |
-|-------|--------------------|
-| `DEV` | Development server |
-| `QA`  | Testing/QA server  |
-| `PROD`| Production server  |
-
-### DeploymentStatus
-| Value      | Description                    |
-|------------|--------------------------------|
-| `PENDING`  | Release is scheduled           |
-| `DEPLOYED` | Successfully deployed          |
-| `FAILED`   | Deployment failed              |
-| `ROLLBACK` | Rolled back to previous version|
-
----
-
-## 🧪 Testing with Postman
-
-Import `Mini-Release-Tracker.postman_collection.json` into Postman.
-Set the base URL variable to `http://localhost:8080`.
-
----
-
-## 🔒 Exception Handling
-
-| Scenario                  | HTTP Status | Response               |
-|---------------------------|-------------|------------------------|
-| Release not found         | 404         | `ReleaseNotFoundException` |
-| Invalid request body      | 400         | Field-level error list |
-| Invalid enum value        | 400         | Type mismatch message  |
-| Unexpected server error   | 500         | Generic error message  |
