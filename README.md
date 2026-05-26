@@ -134,17 +134,6 @@ Application deployed using:
 
 ---
 
-## 📸 Screenshots
-
-Add screenshots here:
-
-- Swagger UI
-- Postman API Testing
-- Railway Deployment
-- MySQL Database Tables
-
----
-
 ## ▶️ Run Locally
 
 ### 1️⃣ Clone Repository
