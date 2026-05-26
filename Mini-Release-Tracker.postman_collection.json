@@ -1,0 +1,114 @@
+{
+  "info": {
+    "name": "Mini Release Tracker API",
+    "description": "Postman collection for the Mini Release Tracker Spring Boot application",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Releases",
+      "item": [
+        {
+          "name": "Create Release",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/releases", "host": ["{{baseUrl}}"], "path": ["api", "releases"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectName\": \"InventoryService\",\n  \"version\": \"v1.2.0\",\n  \"environment\": \"QA\",\n  \"releaseDate\": \"2024-02-10\",\n  \"status\": \"PENDING\",\n  \"description\": \"Feature: stock alert system\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get All Releases",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/releases", "host": ["{{baseUrl}}"], "path": ["api", "releases"] }
+          }
+        },
+        {
+          "name": "Get Release By ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/releases/1", "host": ["{{baseUrl}}"], "path": ["api", "releases", "1"] }
+          }
+        },
+        {
+          "name": "Filter By Project",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/releases?project=InventoryService",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "releases"],
+              "query": [{ "key": "project", "value": "InventoryService" }]
+            }
+          }
+        },
+        {
+          "name": "Filter By Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/releases?status=PENDING",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "releases"],
+              "query": [{ "key": "status", "value": "PENDING" }]
+            }
+          }
+        },
+        {
+          "name": "Filter By Environment",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/releases?environment=PROD",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "releases"],
+              "query": [{ "key": "environment", "value": "PROD" }]
+            }
+          }
+        },
+        {
+          "name": "Update Release (Full)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/releases/1", "host": ["{{baseUrl}}"], "path": ["api", "releases", "1"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectName\": \"InventoryService\",\n  \"version\": \"v1.2.1\",\n  \"environment\": \"QA\",\n  \"releaseDate\": \"2024-02-12\",\n  \"status\": \"DEPLOYED\",\n  \"description\": \"Patch: fixed null pointer in stock module\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Status Only (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/releases/1/status", "host": ["{{baseUrl}}"], "path": ["api", "releases", "1", "status"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"DEPLOYED\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Release",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/api/releases/1", "host": ["{{baseUrl}}"], "path": ["api", "releases", "1"] }
+          }
+        }
+      ]
+    }
+  ]
+}

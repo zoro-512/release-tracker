@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini Release Tracker</title>
+  <meta name="description" content="Track software releases, deployment environments, and delivery status across your projects." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-icon">⬡</span>
+      <span class="brand-name">ReleaseTracker</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-view="dashboard" id="nav-dashboard">
+        <span class="nav-icon">▦</span> Dashboard
+      </a>
+      <a href="#" class="nav-item" data-view="releases" id="nav-releases">
+        <span class="nav-icon">≡</span> All Releases
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <span class="version-badge">v1.0.0</span>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="main-content">
+
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title" id="page-title">Dashboard</h1>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-primary" id="btn-new-release">
+          + New Release
+        </button>
+      </div>
+    </header>
+
+    <!-- ============ DASHBOARD VIEW ============ -->
+    <section class="view active" id="view-dashboard">
+
+      <!-- Stat Cards -->
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Releases</div>
+          <div class="stat-value" id="stat-total">—</div>
+          <div class="stat-sub">All records</div>
+        </div>
+        <div class="stat-card accent-green">
+          <div class="stat-label">Deployed</div>
+          <div class="stat-value" id="stat-deployed">—</div>
+          <div class="stat-sub">Successfully shipped</div>
+        </div>
+        <div class="stat-card accent-yellow">
+          <div class="stat-label">Pending</div>
+          <div class="stat-value" id="stat-pending">—</div>
+          <div class="stat-sub">Awaiting deployment</div>
+        </div>
+        <div class="stat-card accent-red">
+          <div class="stat-label">Failed / Rollback</div>
+          <div class="stat-value" id="stat-failed">—</div>
+          <div class="stat-sub">Need attention</div>
+        </div>
+      </div>
+
+      <!-- Recent Releases Table -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Recent Releases</span>
+        </div>
+        <div class="table-wrapper">
+          <table class="releases-table" id="dash-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Project</th>
+                <th>Version</th>
+                <th>Environment</th>
+                <th>Status</th>
+                <th>Release Date</th>
+              </tr>
+            </thead>
+            <tbody id="dash-tbody">
+              <tr><td colspan="6" class="empty-row">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ============ ALL RELEASES VIEW ============ -->
+    <section class="view" id="view-releases">
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <input type="text" id="filter-project" class="filter-input" placeholder="Filter by project…" />
+        <select id="filter-status" class="filter-select">
+          <option value="">All Statuses</option>
+          <option value="PENDING">Pending</option>
+          <option value="DEPLOYED">Deployed</option>
+          <option value="FAILED">Failed</option>
+          <option value="ROLLBACK">Rollback</option>
+        </select>
+        <select id="filter-env" class="filter-select">
+          <option value="">All Environments</option>
+          <option value="DEV">DEV</option>
+          <option value="QA">QA</option>
+          <option value="PROD">PROD</option>
+        </select>
+        <button class="btn btn-secondary" id="btn-filter">Apply</button>
+        <button class="btn btn-ghost" id="btn-reset">Reset</button>
+      </div>
+
+      <!-- Releases Table -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Releases</span>
+          <span class="record-count" id="record-count">0 records</span>
+        </div>
+        <div class="table-wrapper">
+          <table class="releases-table" id="releases-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Project</th>
+                <th>Version</th>
+                <th>Environment</th>
+                <th>Status</th>
+                <th>Release Date</th>
+                <th>Description</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="releases-tbody">
+              <tr><td colspan="8" class="empty-row">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ===================== MODAL ===================== -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-title">New Release</h2>
+        <button class="modal-close" id="modal-close">✕</button>
+      </div>
+
+      <form id="release-form" novalidate>
+        <input type="hidden" id="form-id" />
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="form-project">Project Name <span class="required">*</span></label>
+            <input type="text" id="form-project" class="form-input" placeholder="e.g. InventoryService" required maxlength="100" />
+            <span class="form-error" id="err-project"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="form-version">Version <span class="required">*</span></label>
+            <input type="text" id="form-version" class="form-input" placeholder="e.g. v1.2.0" required maxlength="50" />
+            <span class="form-error" id="err-version"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="form-env">Environment <span class="required">*</span></label>
+            <select id="form-env" class="form-input" required>
+              <option value="">— Select —</option>
+              <option value="DEV">DEV</option>
+              <option value="QA">QA</option>
+              <option value="PROD">PROD</option>
+            </select>
+            <span class="form-error" id="err-env"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="form-date">Release Date <span class="required">*</span></label>
+            <input type="date" id="form-date" class="form-input" required />
+            <span class="form-error" id="err-date"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="form-status">Status <span class="required">*</span></label>
+            <select id="form-status" class="form-input" required>
+              <option value="">— Select —</option>
+              <option value="PENDING">PENDING</option>
+              <option value="DEPLOYED">DEPLOYED</option>
+              <option value="FAILED">FAILED</option>
+              <option value="ROLLBACK">ROLLBACK</option>
+            </select>
+            <span class="form-error" id="err-status"></span>
+          </div>
+
+          <div class="form-group form-group-full">
+            <label class="form-label" for="form-desc">Description</label>
+            <textarea id="form-desc" class="form-input form-textarea" placeholder="Brief description of this release…" maxlength="500"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" id="btn-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit">Create Release</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== STATUS MODAL ===================== -->
+  <div class="modal-overlay" id="status-modal-overlay">
+    <div class="modal modal-sm" id="status-modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Update Status</h2>
+        <button class="modal-close" id="status-modal-close">✕</button>
+      </div>
+      <div class="form-group" style="padding: 1.5rem 1.5rem 0;">
+        <label class="form-label">Release: <strong id="status-release-label"></strong></label>
+        <select id="status-select" class="form-input" style="margin-top: 0.75rem;">
+          <option value="PENDING">PENDING</option>
+          <option value="DEPLOYED">DEPLOYED</option>
+          <option value="FAILED">FAILED</option>
+          <option value="ROLLBACK">ROLLBACK</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" id="btn-status-cancel">Cancel</button>
+        <button type="button" class="btn btn-primary" id="btn-status-save">Save Status</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== TOAST ===================== -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ===================== DELETE CONFIRM ===================== -->
+  <div class="modal-overlay" id="delete-modal-overlay">
+    <div class="modal modal-sm" id="delete-modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Confirm Delete</h2>
+        <button class="modal-close" id="delete-modal-close">✕</button>
+      </div>
+      <p style="padding: 1.5rem; color: var(--text-secondary); line-height: 1.6;">
+        Are you sure you want to delete release <strong id="delete-release-label"></strong>?
+        <br/>This action cannot be undone.
+      </p>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" id="btn-delete-cancel">Cancel</button>
+        <button type="button" class="btn btn-danger" id="btn-delete-confirm">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
